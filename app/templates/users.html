@@ -1,0 +1,40 @@
+{% extends "base.html"%}
+{% block main %}
+<div class="row bg-title">
+    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+        <h4 class="page-title">USERS</h4>
+    </div>
+    <ul class="nav navbar-top-links navbar-right pull-right">
+        <li>
+            <form id = "userform" role="search" class="app-search hidden-sm hidden-xs m-r-10" action = "{{ url_for('users') }}" method = "post">
+                {{ form.item(size=20, class='form-control',placeholder="Search...", type = 'text') }}
+                <a href="javascript:;" onclick="document.getElementById('userform').submit();"><i class="fa fa-search"></i></a>
+            </form>
+        </li>
+    </ul>
+</div>
+
+<div class="row" style ="height:1000px; overflow:scroll;">
+    {% for user in user_list%}
+    <div class="col-md-3" style="margin: 1em auto">
+        <div id="ud">
+            <!--<svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" role="img"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text></svg> -->
+      
+            <div class="card-body">
+              <h5 class="card-title"> {{user[1]}} Somethng {{user[2]}}</h5>
+              <p class="card-text">User ID {{user[0]}}</p>
+              <p class="card-text"> {{user[3]}}</p>
+              
+            </div>
+            <form action="{{ url_for('userdetails',userid= user[0]) }}" method="post">
+                <button class="button" type="submit">View Profile</button>
+            </form>
+        </div>
+        <div class="col3">
+           
+        </div>
+      </div>
+      {% endfor %}
+
+</div>
+{%endblock%}
