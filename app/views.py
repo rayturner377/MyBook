@@ -92,7 +92,14 @@ def groupdetails(groupid):
         resultValue = cur.execute("select members.memberid, profiles.firstname, profiles.lastname, groups.groupname from members join profiles on members.memberid = profiles.userid join groups on groups.groupid = members.groupid where members.groupid = %s", args)
         members = cur.fetchall()
         group = group[0]
-        return render_template('groupDetails.html',group=group,males = males, females = females, total = males+females, members = members)
+
+        resultValue = cur.execute("select posts.postid, posts.postdate, firstname, lastname from posts join group_posts on group_posts.postid = posts.postid join profiles on posts.userid = profiles.userid where groupid = %s", args)
+        posts = cur.fetchall()
+        
+        resultValue = cur.execute("select editorid, firstname, lastname from editors join profiles on editorid = profiles.userid join groups on groups.groupid = editors.groupid where editors.groupid = %s", args)
+        editors = cur.fetchall()
+        print(editors)
+        return render_template('groupDetails.html',group=group,males = males, females = females, total = males+females, members = members,posts=posts, editors = editors)
     return render_template('groups.html')
 
 @app.route('/posts', methods=['GET','POST'])
@@ -114,8 +121,11 @@ def postdetails(postid):
         cur = mysql.connection.cursor()
         resultValue = cur.execute("SELECT commentid, firstname, lastname, commentdate, comment FROM comments JOIN profiles ON comments.userid = profiles.userid where comments.postid = %s", args)
         comments = cur.fetchall()
-        print(comments)
-        return render_template('postDetails.html',post = post, comments = comments)
+
+        resultValue = cur.execute("select posts.postid, photos.photoname, post_texts.caption from posts left join post_photos on posts.postid = post_photos.postid left join post_texts on posts.postid = post_texts.postid left join photos on post_photos.photoid = photos.photoid where posts.postid = %s", args)
+        postbody = cur.fetchall()
+        postbody = postbody[0]
+        return render_template('postDetails.html',post = post, comments = comments, total_comments = len(comments), postbody=postbody)
     return render_template('posts.html')
 
 generatedata.populate()

@@ -109,7 +109,7 @@
                         <tr>
                             <td>{{post[0]}}</td>
                             <td>{{post[1]}}</td>
-                            <td><form action="{{ url_for('userdetails',userid= post[0]) }}" method="post">
+                            <td><form action="{{ url_for('postdetails',postid= post[0]) }}" method="post">
                                 <button class="button" type="submit">Details</button>
                             </form></td>
                         {% endfor %}

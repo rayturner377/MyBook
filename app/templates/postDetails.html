@@ -13,14 +13,37 @@
                 <li>
                     <div id="sparklinedash"><canvas style="display: inline-block; width: 67px; height: 30px; vertical-align: top;" width="67" height="30"></canvas></div>
                 </li>
-                <li class="text-right"><i class="ti-arrow-up text-success"></i> <span class="counter text-success">{{total}}</span></li>
+                <li class="text-right"><i class="ti-arrow-up text-success"></i> <span class="counter text-success">{{total_comments}}</span></li>
             </ul>
         </div>
     </div>
+
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+        <div class="white-box analytics-info">
+            <h3 class="box-title">Post Photo</h3>
+            {% if postbody[1] == None %}
+            <img src="{{ url_for('static',filename='post_pics/noimage.jpg')}}" style="height:150px; width:100px;">
+            {%else %}
+            <img src="{{ url_for('static',filename='post_pics/'+postbody[1])}}" style="height:150px; width:100px;">
+            {% endif %}
+                
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-sm-6 col-xs-12">
+        <div class="white-box analytics-info">
+            <h3 class="box-title">Post Caption</h3>
+            
+                <span class="counter text-success">{{postbody[2]}}</span>
+    
+        </div>
+    </div>
+
 </div>
 <div class="row">
     <div class="col-sm-12">
         <div class="white-box">
+            
             <h3 class="box-title">Comments of  POST  {{post[0]}}</h3>
             <div class="table-responsive">
                 <table class="table table-striped table-dark">
@@ -28,6 +51,7 @@
                         <tr>
                             <th>Comment ID</th>
                             <th>Commenter</th>
+                            <th>Comment </th>
                             <th>Comment Date</th>
                         </tr>
                     </thead>
@@ -37,6 +61,7 @@
                         <tr>
                             <td>{{comment[0]}}</td>
                             <td>{{comment[1]}} {{comment[2]}}</td>
+                            <td>{{comment[4]}}</td>
                             <td>{{comment[3]}}</td>
                             
                         {% endfor %}

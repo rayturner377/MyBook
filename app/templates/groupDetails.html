@@ -43,8 +43,14 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="white-box">
-            <h3 class="box-title">{{group[1]}}  Members</h3>
-            <div class="table-responsive">
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width:100%">
+                <input type="button" class="btn btn-secondary" value="Members" style="width:33%" id ="members">
+                <input type="button" class="btn btn-secondary" value="Editors" style="width:33%" id = "editors">
+                <input type="button" class="btn btn-secondary" value="Posts" style="width:33%" id = "posts">
+            </div>
+
+            <div class="table-responsive" id = "grpmembers">
                 <table class="table table-striped table-dark">
                     <thead>
                         <tr>
@@ -74,6 +80,66 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="table-responsive" id = "grpeditors" style="display: none">
+                <table class="table table-striped table-dark">
+                    <thead>
+                        <tr>
+                            <th>USER ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for editor in editors%}
+                        <tr>
+                            <td>{{editor[0]}}</td>
+                            <td>{{editor[1]}}</td>
+                            <td>{{editor[2]}}</td>
+                            <td><form action="{{ url_for('userdetails',userid= editor[0]) }}" method="post">
+                                <button class="button" type="submit">Profile</button>
+                            </form></td>
+                        {% endfor %}
+                            
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-responsive" id = grpposts style="display: none">
+                <table class="table table-striped table-dark">
+                    <thead>
+                        <tr>
+                            <th>POST ID</th>
+                            <th>OWNER</th>
+                            <th>DATE</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for post in posts%}
+                        <tr>
+                            <td>{{post[0]}}</td>
+                            <td>{{post[2]}} {{post[3]}}</td>
+                            <td>{{post[1]}}</td>
+                            <td><form action="{{ url_for('postdetails',postid= post[0]) }}" method="post">
+                                <button class="button" type="submit">View Post</button>
+                            </form></td>
+                        {% endfor %}
+                            
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
         </div>
     </div>
 </div>
@@ -106,5 +172,37 @@
       overflow:auto;
     }
 </style>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("#members").click(function(){
+    $("#grpeditors").hide();
+    $("#grpposts").hide();
+    $("#grpmembers").show();
+    $('#members').css('background', 'grey'); 
+    $('#posts').css('background', 'white'); 
+    $('#editors').css('background', 'white'); 
+  });
+  $("#editors").click(function(){
+    $("#grpposts").hide();
+    $("#grpmembers").hide();
+    $("#grpeditors").show();
+    $('#members').css('background', 'white'); 
+    $('#editors').css('background', ' grey'); 
+    $('#posts').css('background', 'white'); 
+
+  });
+  $("#posts").click(function(){
+    $("#grpposts").show();
+    $("#grpmembers").hide();
+    $("#grpeditors").hide();
+    $('#editors').css('background', 'white'); 
+    $('#members').css('background', ' white'); 
+    $('#posts').css('background', ' grey'); 
+  });
+});
+</script>
     
 {%endblock%}
