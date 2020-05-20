@@ -25,6 +25,11 @@ def home():
             
     return render_template("index.html", total_users=total_users[0][0], total_posts=total_posts[0][0],total_groups=total_groups[0][0])
 
+@app.route('/about')
+def about():
+            
+    return render_template("about.html")
+
 
 @app.route('/users', methods = ["GET","POST"])
 def users():
@@ -61,14 +66,13 @@ def userdetails(userid):
             cur.callproc('getPosts',args)
             posts = cur.fetchall()
 
-            cur.execute("select * from messages where sender = %s",args)
+            cur.execute("select messageid, receiver, firstname, lastname, messagedate, messagestring from messages join profiles on receiver = profiles.userid where sender = %s",args)
             sentMessages = cur.fetchall()
-            cur.execute("select * from messages where receiver = %s",args)
+            cur.execute("select messageid, sender, firstname, lastname, messagedate, messagestring from messages join profiles on receiver = profiles.userid where receiver = %s",args)
             receivedMessages = cur.fetchall()
-            print(sentMessages)
-        gt, pt, ft = len(groups) , len(posts) , len(friends)
-
-        return render_template('userDetails.html',user=user,posts = posts, friends = friends, groups = groups, pt=pt,gt=gt,ft=ft )
+            gt, pt, ft = len(groups) , len(posts) , len(friends)
+            
+        return render_template('userDetails.html',user=user,posts = posts, friends = friends, groups = groups, pt=pt,gt=gt,ft=ft,sentMessages= sentMessages, receivedMessages=receivedMessages)
     return render_template('users.html')
 
 @app.route('/groups', methods=['GET','POST'])
