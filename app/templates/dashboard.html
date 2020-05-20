@@ -1,5 +1,47 @@
 {% extends "base2.html" %}
 
 {% block main %}
-  
+<div class="row" >            
+            <h4 class="page-title">Post Feed</h4>
+            {% for feed in postFeed%}
+            
+            <div class="card">
+                <h5 class="card-title">{{feed[1]}} {{feed[2]}}</h5>
+                {% if feed[3] == None %}
+                {%else %}
+                    <img class="card-img-top" src="{{ url_for('static',filename='post_pics/'+feed[3])}}" alt="Card image cap">
+                {% endif %}
+
+                <div class="card-body">
+                    {% if feed[4] == None %}
+                    {%else %}
+                        <p class="card-text">{{feed[4]}}</p>
+                    {% endif %}
+                    <form action="{{ url_for('comments',postid = feed[0]) }}" method="post">
+                        <button class="button" type="submit">VIEW COMMENTS</button>
+                    </form>
+                </div>
+              </div>
+
+            {% endfor %}
+
+</div>
+
+<style>
+    .row{
+        width: 70%;
+        background-color: #FDF5E6;
+        justify-content: center;
+        display: grid;
+        grid-template-columns: auto;
+        margin: auto;
+    }
+    .card{
+        width: 20rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+</style>
 {% endblock %}

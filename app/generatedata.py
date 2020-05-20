@@ -78,7 +78,7 @@ def generate_users():
     profilecsv= csv.writer(open('profiles.csv', 'w', newline=''), delimiter=',', quoting=csv.QUOTE_MINIMAL)
     userlogincsv = csv.writer(open('userlogin.csv', 'w', newline=''), delimiter=',', quoting=csv.QUOTE_MINIMAL)
     pic = 1
-    for u in all_users[:100]:
+    for u in all_users[:8000]:
         prof = [u[0],u[1],u[3],u[2],u[7],pic]
         ux = [u[6]]
         ul = [u[4],u[5]]
@@ -109,9 +109,9 @@ def generate_friends():
     def userList(lst):
         ulist = []
         #each user has a max of 300 friends
-        maxfriends = 300
+        maxfriends = 100
         #set number of users to assign random friends to
-        assignTo = len(lst) // 5
+        assignTo = len(lst) // 10
         for user in lst[:assignTo]:
             friendsnumber = random.choice(lst[:maxfriends])
             for x in range(friendsnumber):
@@ -270,7 +270,7 @@ def generate_posts():
             "We got that Friday feeling.","Catch flights, not Feelings.","Disappointed but not surprised.","How I feel when there is no Coffee. DEPRESSO!"
             "50% Savage. 50% Sweetness.","You can’t do epic stuff with basic people."]
         posttexts = []
-        total_post_texts = int(len(posts)/0.9)
+        total_post_texts = int(len(posts)/1)
         lstpostids = list(set([random.choice([y for y in range(1,len(posts))]) for x in range(total_post_texts)]))
         for x in lstpostids:
             text= random.choice(textslist)
@@ -321,7 +321,7 @@ def generate_group_posts():
         editors = list(csv.reader(e))
         
 
-    number_of_gposts = int(0.33 * len(posts))
+    number_of_gposts = int(0.1 * len(posts))
     group_posts = _group_posts(posts, editors,number_of_gposts)
     
     group_postscsv= csv.writer(open('group_posts.csv', 'w', newline=''), delimiter=',', quoting=csv.QUOTE_MINIMAL)
@@ -341,7 +341,7 @@ def generate_photos():
     def posts_photos(posts,allprofiles):
         mypath = app.config['POST_PICS'] #mypath links to folder with photos
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        total_post_pics = int(len(posts)*0.8)
+        total_post_pics = int(len(posts)*0.4)
         photos = []
         postpics = []
         lstpostids = list(set([random.choice([y for y in range(1,len(posts))]) for x in range(total_post_pics)]))
@@ -639,22 +639,22 @@ def populate_groupPosts():
             cur.close()
 
 def populate():
-    #generate_users()
-    #generate_friends()
-    #generate_groups()
-    #generate_posts()
-    #generate_group_posts()
-    #generate_photos()
-    #generate_comments()
-    #generate_messages()
+    generate_users()
+    generate_friends()
+    generate_groups()
+    generate_posts()
+    generate_group_posts()
+    generate_photos()
+    generate_comments()
+    generate_messages()
 
-    #populateUsers()
-    #populate_friends()
-    #populate_groups()
-    #populate_photos()
-    #populate_posts()
-    #populate_messages()
-    #populate_groupPosts()
+    populateUsers()
+    populate_friends()
+    populate_groups()
+    populate_photos()
+    populate_posts()
+    populate_messages()
+    populate_groupPosts()
     pass
     
 

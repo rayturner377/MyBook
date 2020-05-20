@@ -17,3 +17,13 @@
     background-color: #0072ff;
 }
 
+body {  
+    background: radial-gradient(#ebe6e6 3px, transparent 4px),
+    radial-gradient(#ebe6e6 3px, transparent 4px),
+    linear-gradient(azure 4px, transparent 0),
+    linear-gradient(45deg, transparent 74px, transparent 75px, #ebe6e6 75px, #ebe6e6 76px, transparent 77px, transparent 109px),
+    linear-gradient(-45deg, transparent 75px, transparent 76px, #ebe6e6 76px, #ebe6e6 77px, transparent 78px, transparent 109px),
+    azure;
+    background-size: 109px 109px, 109px 109px,100% 6px, 109px 109px, 109px 109px;
+    background-position: 54px 55px, 0px 0px, 0px 0px, 0px 0px, 0px 0px;
+ } 

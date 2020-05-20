@@ -4,7 +4,6 @@ chardet==3.0.4
 Click==7.0
 decorator==4.4.1
 et-xmlfile==1.0.1
-Factory==1.2
 Faker==4.0.3
 Flask==1.1.1
 Flask-MySQLdb==0.2.0

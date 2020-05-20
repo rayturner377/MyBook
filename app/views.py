@@ -32,8 +32,9 @@ def login():
             session['logged_in'] = True
             session['id'] = account[0]
             session['username'] = account[1]
+            print(session['id'], session['username'])
         
-            return render_template('dashboard.html')
+            return redirect(url_for('dashboard'))
         else:
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect username/password!'
@@ -44,20 +45,109 @@ def login():
 def dashboard():
     if 'logged_in' not in session:
         return redirect(url_for('login'))
-    
-    """Render website's home page."""
-    return render_template('dashboard.html')
+    with app.app_context():
+            args = []
+            args.append(session['id'])
+            cur = mysql.connection.cursor()
+            cur.callproc('getUserPersonalPosts',args)
+            postFeed = cur.fetchall()
+    return render_template('dashboard.html', postFeed = postFeed)
+
+@app.route('/comments/<postid>',methods=['GET','POST'])
+def comments(postid):
+    print(postid)
+    with app.app_context():
+        args = []
+        args.append(postid)
+        cur = mysql.connection.cursor()
+        resultValue = cur.execute("SELECT commentid, firstname, lastname, commentdate, comment FROM comments JOIN profiles ON comments.userid = profiles.userid where comments.postid = %s", args)
+        comment = cur.fetchall()
+        resultValue = cur.execute("SELECT postid, postdate, firstname, lastname FROM posts JOIN profiles ON posts.userid = profiles.userid where posts.postid = %s", args)
+        post = cur.fetchall()[0]
+        resultValue = cur.execute("select posts.postid, photos.photoname, post_texts.caption from posts left join post_photos on posts.postid = post_photos.postid left join post_texts on posts.postid = post_texts.postid left join photos on post_photos.photoid = photos.photoid where posts.postid = %s", args)
+        postbody = cur.fetchall()[0]
+    return render_template('comments.html', comment= comment, postbody = postbody, post=post)
 
 @app.route('/about2')
 def about2():
     """Render the website's about page."""
     return render_template('about2.html')
-'''
-@app.route('/profile/<userid>',methods=['GET','POST'])
-def dashboard():
-    """Render a secure page on our website that only logged in users can access."""
-    return render_template('dashboard.html')
-'''
+
+@app.route('/profiler',methods=['GET','POST'])
+def profile():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    else:
+        with app.app_context():
+            args = []
+            args.append(session['id'])
+            cur = mysql.connection.cursor()
+            cur.callproc('userDetails',args)
+            user = cur.fetchall()[0]
+            print(user)
+    return render_template('profile.html', user=user )
+
+@app.route('/friends',methods=['GET','POST'])
+def friends():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    else:
+        with app.app_context():
+            args = []
+            args.append(session['id'])
+            cur = mysql.connection.cursor()
+            cur.callproc('getUserFriends',args)
+            friends = cur.fetchall()
+            print(friends)
+    return render_template('friends.html', friends=friends )
+
+@app.route('/usergroups',methods=['GET','POST'])
+def usergroups():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    else:
+        with app.app_context():
+            args = []
+            userid = session['id']
+            args.append(session['id'])
+            cur = mysql.connection.cursor()
+            cur.callproc('getGroups',args)
+            groups = cur.fetchall()
+            print(groups)
+    return render_template('usergroups.html', groups=groups )
+
+
+@app.route('/usergroupdetails/<groupid>',methods=['GET','POST'])
+def userGroupDetails(groupid):
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    else:
+        with app.app_context():
+            args = []
+            userid = session['id']
+            args.append(groupid)
+            cur = mysql.connection.cursor()
+            resultValue = cur.execute("select posts.postid, posts.postdate, firstname, lastname from posts join group_posts on group_posts.postid = posts.postid join profiles on posts.userid = profiles.userid where groupid = %s", args)
+            posts = cur.fetchall()
+            print(posts)
+    return render_template('userGroupDetails.html', posts=posts )
+
+@app.route('/grouppostdetails/<postid>',methods=['GET','POST'])
+def groupPostDetail(postid):
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    else:
+        with app.app_context():
+            args = []
+            args.append(postid)
+            cur = mysql.connection.cursor()
+            resultValue = cur.execute("SELECT commentid, firstname, lastname, commentdate, comment FROM comments JOIN profiles ON comments.userid = profiles.userid where comments.postid = %s", args)
+            comment = cur.fetchall()
+            resultValue = cur.execute("SELECT postid, postdate, firstname, lastname FROM posts JOIN profiles ON posts.userid = profiles.userid where posts.postid = %s", args)
+            post = cur.fetchall()[0]
+            resultValue = cur.execute("select posts.postid, photos.photoname, post_texts.caption from posts left join post_photos on posts.postid = post_photos.postid left join post_texts on posts.postid = post_texts.postid left join photos on post_photos.photoid = photos.photoid where posts.postid = %s", args)
+            postbody = cur.fetchall()[0]
+    return render_template('groupPostDetails.html', comment= comment, postbody = postbody, post=post)
 
 
 @app.route("/logout")

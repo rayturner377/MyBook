@@ -1,0 +1,32 @@
+
+{% extends "base2.html" %}
+
+{% block main %}
+
+<div class="table-responsive" id = "">
+    <h4 class="page-title">Friends</h4>
+    <table class="table table-striped table-dark">
+        <thead >
+            <tr>
+                <th>USER ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for friend in friends%}
+            <tr>
+                <td><img src="{{ url_for('static',filename='images/'+friend[3])}}" style="height:150px; width:100px;"></td>
+                
+                <td>{{friend[1]}}</td>
+                <td>{{friend[2]}}</td>
+            {% endfor %}
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

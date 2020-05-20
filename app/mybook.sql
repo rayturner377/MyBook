@@ -1,4 +1,4 @@
-/*
+
 create database if not Exists mybook;
 use mybook;
 
@@ -322,7 +322,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-*/
+
 
 DELIMITER $$
 CREATE PROCEDURE getUserDetails(
@@ -333,6 +333,54 @@ BEGIN
     WHERE userlogin.email = email and userlogin.pass = password(pass);
 END$$
 DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE PROCEDURE getUserPersonalPosts(
+    IN userid int
+)
+BEGIN
+	SELECT posts.postid, profiles.firstname, profiles.lastname, photos.photoname, post_texts.caption, posts.postdate
+    FROM posts 
+
+    JOIN profiles ON posts.userid = profiles.userid
+    left JOIN post_photos on posts.postid = post_photos.postid 
+    left JOIN post_texts on posts.postid = post_texts.postid 
+    left JOIN photos on post_photos.photoid = photos.photoid
+    
+    WHERE posts.postid NOT IN 
+    (SELECT group_posts.postid FROM group_posts) and 
+    posts.userid IN 
+        (
+            SELECT (f.friendid1) friendship FROM friends f JOIN profiles on f.friendid1 = profiles.userid WHERE f.friendid2 = userid
+            UNION 
+            SELECT (f.friendid2) friendship FROM friends f JOIN profiles on f.friendid2 = profiles.userid WHERE f.friendid1 = userid
+        )
+    ORDER BY posts.postdate
+    ;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE getUserFriends(
+    IN userid int
+)
+BEGIN
+	SELECT (f.friendid1) friendship, firstname, lastname, photos.photoname FROM friends f join profiles on f.friendid1 = profiles.userid 
+    join photos on profiles.photoid = photos.photoid
+    WHERE f.friendid2 = userid
+    UNION 
+    SELECT (f.friendid2) friendship, firstname, lastname, photos.photoname FROM friends f join profiles on f.friendid2 = profiles.userid 
+    join photos on profiles.photoid = photos.photoid
+    WHERE f.friendid1 = userid;
+END$$
+DELIMITER ;
+
+
+
+
 
 
 

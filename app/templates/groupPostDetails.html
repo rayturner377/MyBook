@@ -1,0 +1,35 @@
+{% extends "base2.html" %}
+
+{% block main %}
+
+<div class="row">
+    
+    <div class="card">
+        <h4 class="page-title">POST</h4>
+        {% if postbody[1] == None %}
+
+        {%else %}
+             <img  src="{{ url_for('static',filename='post_pics/'+postbody[1])}}" alt="Card image cap" width="300px">
+        {% endif %}
+
+        <div class="card-body">
+            {% if postbody[2] == None %}
+            
+            {%else %}
+                <p class="card-text">{{postbody[2]}}</p>
+            {% endif %}
+            <hr>
+            {% for c in comment %}
+            <p>Commenter: {{c[1]}} {{c[2]}}</p>
+            <p>{{c[3]}} : {{c[4]}}</p>
+
+            {% endfor %}
+        </div>
+      </div>
+    
+      <div comment>
+
+      </div>
+    
+
+{% endblock %}
