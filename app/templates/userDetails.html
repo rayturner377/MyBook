@@ -62,9 +62,10 @@
     <div class="col-sm-12">
         <div class="white-box">
             <div class="btn-group btn-group-toggle" data-toggle="buttons" style="width:100%">
-                <input type="button" class="btn btn-secondary" value="Friends" style="width:33%" id ="friends">
-                <input type="button" class="btn btn-secondary" value="Posts" style="width:33%" id = "posts">
-                <input type="button" class="btn btn-secondary" value="Groups" style="width:33%" id = "groups">
+                <input type="button" class="btn btn-secondary" value="Friends" style="width:25%" id ="friends">
+                <input type="button" class="btn btn-secondary" value="Posts" style="width:25%" id = "posts">
+                <input type="button" class="btn btn-secondary" value="Groups" style="width:25%" id = "groups">
+                <input type="button" class="btn btn-secondary" value="Messages" style="width:25%" id = "messages">
             </div>
             
             <div class="table-responsive" id = "usrfriends">
@@ -147,6 +148,12 @@
                     </tbody>
                 </table>
             </div>
+            <div class="table-responsive" id = "usemessages"  style="display: none; " ></div>
+                <input type="button" class="btn btn-secondary" value="Sent" style="width:25%; margin-top: 25px;margin-right: 25px" id ="Sent">
+                <input type="button" class="btn btn-secondary" value="Received" style="width:25%; margin-top: 25px;" id = "Received">
+            </div>
+            
+            
         </div>
     </div>
 </div>
@@ -187,26 +194,42 @@ $(document).ready(function(){
     $("#usrposts").hide();
     $("#usegroups").hide();
     $("#usrfriends").show();
+    $("#usemessages").hide();
     $('#friends').css('background', 'grey'); 
     $('#posts').css('background', 'white'); 
     $('#groups').css('background', 'white'); 
+    $('#messages').css('background', ' white'); 
   });
   $("#posts").click(function(){
     $("#usrfriends").hide();
     $("#usegroups").hide();
     $("#usrposts").show();
+    $("#usemessages").hide();
     $('#friends').css('background', 'white'); 
     $('#posts').css('background', ' grey'); 
     $('#groups').css('background', 'white'); 
+    $('#messages').css('background', ' white'); 
 
   });
   $("#groups").click(function(){
     $("#usrposts").hide();
     $("#usegroups").show();
     $("#usrfriends").hide();
+    $("#usemessages").hide();
     $('#friends').css('background', 'white'); 
     $('#posts').css('background', ' white'); 
     $('#groups').css('background', ' grey'); 
+    $('#messages').css('background', ' white'); 
+  });
+  $("#messages").click(function(){
+    $("#usrposts").hide();
+    $("#usegroups").hide();
+    $("#usrfriends").hide();
+    $("#usemessages").show();
+    $('#friends').css('background', 'white'); 
+    $('#posts').css('background', ' white'); 
+    $('#groups').css('background', ' white'); 
+    $('#messages').css('background', ' grey'); 
   });
 });
 </script>

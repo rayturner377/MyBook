@@ -48,7 +48,6 @@ def userdetails(userid):
         user = cur.fetchall()
     if user:
         user = user[0]
-        posts, groups, friends, gt, pt, ft = [0],[0],[0],0,0,0
         with app.app_context():
             cur = mysql.connection.cursor()
             cur.callproc('getFriends',args)
@@ -61,8 +60,14 @@ def userdetails(userid):
             cur = mysql.connection.cursor()
             cur.callproc('getPosts',args)
             posts = cur.fetchall()
+
+            cur.execute("select * from messages where sender = %s",args)
+            sentMessages = cur.fetchall()
+            cur.execute("select * from messages where receiver = %s",args)
+            receivedMessages = cur.fetchall()
+            print(sentMessages)
         gt, pt, ft = len(groups) , len(posts) , len(friends)
-        print(len(groups))
+
         return render_template('userDetails.html',user=user,posts = posts, friends = friends, groups = groups, pt=pt,gt=gt,ft=ft )
     return render_template('users.html')
 

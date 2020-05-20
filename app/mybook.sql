@@ -288,7 +288,7 @@ BEGIN
     WHERE users.userid = userid;
 END$$
 DELIMITER ;
-*/
+
 DELIMITER $$
 CREATE PROCEDURE getFriends(
     IN userid int
@@ -299,7 +299,7 @@ BEGIN
     SELECT (f.friendid2) friendship, firstname, lastname FROM friends f join profiles on f.friendid2 = profiles.userid WHERE f.friendid1 = userid;
 END$$
 DELIMITER ;
-/*
+
 
 DELIMITER $$
 CREATE PROCEDURE getGroups(
@@ -323,4 +323,7 @@ END$$
 DELIMITER ;
 
 */
+
+
+
 
