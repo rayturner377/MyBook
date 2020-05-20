@@ -1,16 +1,80 @@
 from datetime import date
 from app import app, mysql
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, session
 from app import generatedata
 import random, datetime, csv
-from flask_wtf import FlaskForm
-from wtforms import StringField
+from .forms import searchbox, LoginForm
 
-class searchbox(FlaskForm):
-    item = StringField('item')
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if 'logged_in' in session:
+        print("user is logged in")
+        return redirect(url_for('dashboard'))
+    form = LoginForm()
+    msg = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        args = []
+        args.append(username)
+        args.append(password)
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.callproc('getUserDetails',args)
+            account = cur.fetchall()
+
+        # If account exists in accounts table in out database
+        
+        if account:
+            account = account[0]
+            print("\n\n",account)
+            # Create session data, we can access this data in other routes
+            session['logged_in'] = True
+            session['id'] = account[0]
+            session['username'] = account[1]
+        
+            return render_template('dashboard.html')
+        else:
+            # Account doesnt exist or username/password incorrect
+            msg = 'Incorrect username/password!'
+    # Show the login form with message (if any)
+    return render_template('login.html', form= form)
+
+@app.route('/dashboard')
+def dashboard():
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    
+    """Render website's home page."""
+    return render_template('dashboard.html')
+
+@app.route('/about2')
+def about2():
+    """Render the website's about page."""
+    return render_template('about2.html')
+'''
+@app.route('/profile/<userid>',methods=['GET','POST'])
+def dashboard():
+    """Render a secure page on our website that only logged in users can access."""
+    return render_template('dashboard.html')
+'''
 
 
-@app.route('/')
+@app.route("/logout")
+def logout():
+    # Logout the user and end the session
+    session.pop('logged_in', None)
+    session.pop('id', None)
+    session.pop('username', None)
+    # Redirect to login page
+    return redirect(url_for('login'))
+
+
+
+#admin section
+############################################################
+
+@app.route('/admin')
 def home():
     with app.app_context():
             cur = mysql.connection.cursor()     
@@ -28,7 +92,7 @@ def home():
 @app.route('/about')
 def about():
             
-    return render_template("about.html")
+    return render_template("about2.html")
 
 
 @app.route('/users', methods = ["GET","POST"])
@@ -138,4 +202,36 @@ def postdetails(postid):
     return render_template('posts.html')
 
 generatedata.populate()
+
+
+
+###
+# The functions below should be applicable to all Flask apps.
+###
+
+@app.route('/<file_name>.txt')
+def send_text_file(file_name):
+    """Send your static text file."""
+    file_dot_text = file_name + '.txt'
+    return app.send_static_file(file_dot_text)
+
+
+@app.after_request
+def add_header(response):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also tell the browser not to cache the rendered page. If we wanted
+    to we could change max-age to 600 seconds which would be 10 minutes.
+    """
+    response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
+    response.headers['Cache-Control'] = 'public, max-age=0'
+    return response
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """Custom 404 page."""
+    return render_template('404.html'), 404
+
+
 

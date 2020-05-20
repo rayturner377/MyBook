@@ -324,6 +324,15 @@ DELIMITER ;
 
 */
 
+DELIMITER $$
+CREATE PROCEDURE getUserDetails(
+    IN email varchar(40), pass varchar(255) 
+)
+BEGIN
+	SELECT userid, email from userlogin
+    WHERE userlogin.email = email and userlogin.pass = password(pass);
+END$$
+DELIMITER ;
 
 
 

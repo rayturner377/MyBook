@@ -270,7 +270,7 @@ def generate_posts():
             "We got that Friday feeling.","Catch flights, not Feelings.","Disappointed but not surprised.","How I feel when there is no Coffee. DEPRESSO!"
             "50% Savage. 50% Sweetness.","You can’t do epic stuff with basic people."]
         posttexts = []
-        total_post_texts = int(len(posts)/2)
+        total_post_texts = int(len(posts)/0.9)
         lstpostids = list(set([random.choice([y for y in range(1,len(posts))]) for x in range(total_post_texts)]))
         for x in lstpostids:
             text= random.choice(textslist)
@@ -341,7 +341,7 @@ def generate_photos():
     def posts_photos(posts,allprofiles):
         mypath = app.config['POST_PICS'] #mypath links to folder with photos
         onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-        total_post_pics = int(len(posts)/2)
+        total_post_pics = int(len(posts)*0.8)
         photos = []
         postpics = []
         lstpostids = list(set([random.choice([y for y in range(1,len(posts))]) for x in range(total_post_pics)]))
