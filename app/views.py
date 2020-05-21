@@ -80,14 +80,12 @@ def profile():
     if 'logged_in' not in session:
         return redirect(url_for('login'))
     else:
-        with app.app_context():
-            args = []
+        args = []
             args.append(session['id'])
             cur = mysql.connection.cursor()
             cur.callproc('userDetails',args)
-            user = cur.fetchall()
+            user = cur.fetchall()[0]
             print(user)
-            return redirect(url_for(dashboard))
     return render_template('profile.html', user=user )
 
 @app.route('/friends',methods=['GET','POST'])
