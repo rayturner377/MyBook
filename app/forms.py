@@ -19,5 +19,5 @@ class RegistrationForm(FlaskForm):
     dob = StringField('dob', validators = [InputRequired()])
     gender = SelectField('Gender', validators=[InputRequired()], choices=[(0, "Male"), (1, "Female")])
     biography = TextAreaField('Biography', validators=[InputRequired()])
-    photo = FileField('Profile Picture', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Image')])
+    photo = FileField('Profile Picture', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'webp'], 'Image')])
     password = PasswordField('Password', validators=[InputRequired()])

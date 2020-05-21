@@ -175,7 +175,9 @@ def registration():
             uploadfolder = "app\static\images"
             filename = secure_filename(photo)
             photo.save(os.path.join(uploadfolder, filename))
-
+            print("filename is",filename)
+        else:
+            filename = "male.webp"
         
         if gender=='0':
             gender = 'Male'
@@ -226,10 +228,10 @@ def registration():
             args = []
             args.append(userid)
             args.append(filename)
-
+        print(filename)
         with app.app_context():
             cur = mysql.connection.cursor()
-            cur.callproc("createPhotos",args)
+            cur.execute("insert into photos (userid, photoname) values(%s,%s)",[userid, filename])
             mysql.connection.commit()
 
         
