@@ -11,5 +11,9 @@ venv/
 
 #generated data
 .csv
+users.csv
+userlogin.csv
+profiles.csv
+posts.csv
 # PyCharm
 .idea

@@ -3,7 +3,9 @@ from app import app, mysql
 from flask import render_template, request, redirect, url_for, session
 from app import generatedata
 import random, datetime, csv
-from .forms import searchbox, LoginForm
+from .forms import searchbox, LoginForm, RegistrationForm
+from werkzeug.utils import secure_filename
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -83,8 +85,9 @@ def profile():
             args.append(session['id'])
             cur = mysql.connection.cursor()
             cur.callproc('userDetails',args)
-            user = cur.fetchall()[0]
+            user = cur.fetchall()
             print(user)
+            return redirect(url_for(dashboard))
     return render_template('profile.html', user=user )
 
 @app.route('/friends',methods=['GET','POST'])
@@ -148,6 +151,94 @@ def groupPostDetail(postid):
             resultValue = cur.execute("select posts.postid, photos.photoname, post_texts.caption from posts left join post_photos on posts.postid = post_photos.postid left join post_texts on posts.postid = post_texts.postid left join photos on post_photos.photoid = photos.photoid where posts.postid = %s", args)
             postbody = cur.fetchall()[0]
     return render_template('groupPostDetails.html', comment= comment, postbody = postbody, post=post)
+
+@app.route('/registration',methods=['GET','POST'])
+def registration():
+    if 'logged_in' in session:
+        return redirect(url_for('dashboard'))
+    
+    form = RegistrationForm()
+    if request.method == 'POST':# and form.validate_on_submit():
+        print("\n\nWere here")
+        fname = request.form['firstName']
+        print(fname)
+        lname = request.form['lastName']
+        email = request.form['email']
+        gender = request.form["gender"]
+        password = request.form["password"]
+        biography = request.form['biography']
+        photo = form.photo.data
+        dob = request.form['dob']
+        filename = ''
+        filename2 = ''
+        if photo:
+            uploadfolder = "app\static\images"
+            filename = secure_filename(photo)
+            photo.save(os.path.join(uploadfolder, filename))
+
+        
+        if gender=='0':
+            gender = 'Male'
+        else:
+            gender = 'Female'
+
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            results = cur.execute("select count(photoid) from photos")
+            photoid = int(cur.fetchall()[0][0] ) + 1
+
+            cur = mysql.connection.cursor()
+            args = []
+            args.append(datetime.date.today())
+            args.append(email)
+            args.append(password)
+            args.append(fname)
+            args.append(lname)
+            args.append(dob)
+            args.append(gender)
+            args.append(biography)
+            args.append(photoid)
+        print(photoid)
+
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            print("the arguments\n\n")
+            print(args)
+            cur.execute("insert into users (date_registered) values(%s)", [str(datetime.date.today())])
+            mysql.connection.commit()
+
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.execute("insert into userlogin (email, pass) values(%s, password(%s))", [email, password])
+            mysql.connection.commit()
+        
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.execute("insert into profiles (firstname, lastname, dob, gender, biography, photoid) values(%s, %s, %s, %s, %s, %s)", [fname, lname, dob, gender, biography, photoid])
+            mysql.connection.commit()
+
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.execute("select userid from users order by userid desc limit 1")
+            userid = cur.fetchall()
+            userid = userid[0][0]
+            print(userid)
+            args = []
+            args.append(userid)
+            args.append(filename)
+
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.callproc("createPhotos",args)
+            mysql.connection.commit()
+
+        
+        
+        return redirect(url_for('login'))
+        
+
+    return render_template('registration.html', form = form)
+
 
 
 @app.route("/logout")

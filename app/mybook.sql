@@ -1,4 +1,4 @@
-
+/*
 create database if not Exists mybook;
 use mybook;
 
@@ -150,6 +150,8 @@ CREATE TABLE members (
 );
 
 -- Stored procedures to Populate tables
+
+
 
 DELIMITER $$
 CREATE PROCEDURE createUser(
@@ -378,8 +380,16 @@ BEGIN
 END$$
 DELIMITER ;
 
+*/
 
-
+DELIMITER $$
+CREATE PROCEDURE userTable(
+	IN date_registered date
+)
+BEGIN
+	INSERT INTO users (date_registered) VALUES (date_registered);
+END$$
+DELIMITER ;
 
 
 
